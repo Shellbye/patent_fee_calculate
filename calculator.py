@@ -5,7 +5,7 @@ fee_year = [900, 1200, 2000, 4000, 6000, 8000]
 
 class Patent(object):
     year = 0
-    total_fee = 0
+    # total_fee = 0
 
     def __repr__(self):
         return "{year}:{fee}".format(year=self.year, fee=self.total_fee)
