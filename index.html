@@ -6,16 +6,29 @@
 </head>
 <body>
 <h1>专利年费计算器</h1>
-每年新增专利数<input id="patents_per_year" type="number" value=20>
-，计算年数<input id="years" type="number" value=20>
-<button onclick="calculate(document.getElementById('patents_per_year').value,
-document.getElementById('years').value)">计算</button>
+每年新增专利数
+<input id="patents_per_year" type="number" value=20>
+，计算年数
+<input id="years" type="number" value=20>,
+专利类型
+<select id="p_type">
+    <option value="patent" selected>发明专利</option>
+    <option value="patent2">实用新型</option>
+    <option value="patent3">外观设计</option>
+</select>
+<button onclick="calculate(
+    document.getElementById('patents_per_year').value,
+    document.getElementById('years').value,
+    document.getElementById('p_type').value
+    )">计算
+</button>
 
 <table id="res">
 </table>
 
 <script>
     var fee_year = [900, 1200, 2000, 4000, 6000, 8000];
+    var fee2_year = [600, 900, 1200, 2000];
 
     var Patent = function () {
         this.year = 0;
@@ -40,12 +53,27 @@ document.getElementById('years').value)">计算</button>
         return this_year_fee;
     };
 
+    Patent.prototype.get_this_year_fee2 = function () {
+        var this_year_fee2 = 0;
+        if (this.year <= 3)
+            this_year_fee2 = fee2_year[0];
+        else if (this.year <= 5)
+            this_year_fee2 = fee2_year[1];
+        else if (this.year <= 8)
+            this_year_fee2 = fee2_year[2];
+        else if (this.year <= 10)
+            this_year_fee2 = fee2_year[3];
+        else
+            this_year_fee2 = 0;
+        return this_year_fee2;
+    };
+
     Patent.prototype.grow = function () {
         this.year += 1;
     };
 
 
-    function calculate(patents_per_year, years) {
+    function calculate(patents_per_year, years, patent_type) {
         var index = 0;
         var patent_list = [];
         var res = "<tr><td>年数</td><td>费用</td></tr>";
@@ -58,7 +86,10 @@ document.getElementById('years').value)">计算</button>
             var cur_year_fee = 0;
             for (var j = 0; j < patent_list.length; j++) {
                 patent_list[j].grow();
-                cur_year_fee += patent_list[j].get_this_year_fee();
+                if (patent_type === 'patent')
+                    cur_year_fee += patent_list[j].get_this_year_fee();
+                else
+                    cur_year_fee += patent_list[j].get_this_year_fee2();
             }
             res += "<tr><td>" + index + "</td><td>" + cur_year_fee + "</td></tr>";
         }
